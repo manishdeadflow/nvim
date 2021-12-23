@@ -2,6 +2,7 @@
 call plug#begin('~/.vim/plugged')
 
 Plug 'folke/tokyonight.nvim', { 'branch': 'main' }
+Plug 'Mofiqul/dracula.nvim'
 Plug 'nvim-lualine/lualine.nvim'
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'kdheepak/tabline.nvim'
@@ -13,6 +14,9 @@ Plug 'norcalli/nvim-colorizer.lua'
 Plug 'kevinhwang91/rnvimr', {'do': 'make sync'}
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 let g:coc_global_extensions = ['coc-clangd', 'coc-css', 'coc-cssmodules', 'coc-emmet', 'coc-eslint', 'coc-html', 'coc-json', 'coc-prettier', 'coc-tsserver']
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'p00f/nvim-ts-rainbow'
+
 
 call plug#end()
 
@@ -52,17 +56,11 @@ set timeoutlen=500                      " By default timeoutlen is 1000 ms
 set formatoptions-=cro                  " Stop newline continution of comments
 set clipboard=unnamedplus               " Copy paste between vim and everything else
 
-let g:tokyonight_style = "night"
-let g:tokyonight_italic_functions = 1
-let g:tokyonight_sidebars = [ "qf", "vista_kind", "terminal", "packer" ]
+let g:dracula_show_end_of_buffer = 1
+let g:dracula_transparent_bg = 1
+let g:dracula_lualine_bg_color = "#44475a"
 
-" Change the "hint" color to the "orange" color, and make the "error" color bright red
-let g:tokyonight_colors = {
-  \ 'hint': 'orange',
-  \ 'error': '#ff0000'
-\ }
-
-colorscheme tokyonight
+colorscheme dracula
 
 lua << END
 
@@ -124,6 +122,46 @@ require'colorizer'.setup(
 	  css_fn   = true;         -- Enable all CSS *functions*: rgb_fn, hsl_fn
   })
 
+require('dracula').colors()
+
+require('telescope').setup{
+  -- ...
+  defaults = {
+    file_ignore_patterns = {"node_modules"}
+  }
+}
+
+require'nvim-treesitter.configs'.setup {
+  ensure_installed = "maintained",
+  sync_install = false,
+  ignore_install = { "" },
+
+  highlight = {
+    enable = true,
+    disable = { "" },
+
+    additional_vim_regex_highlighting = true,
+  },
+  indent = {
+    enable = true
+  }
+}
+
+require("nvim-treesitter.configs").setup {
+  highlight = {
+      -- ...
+  },
+  -- ...
+  rainbow = {
+    enable = true,
+    -- disable = { "jsx", "cpp" }, list of languages you want to disable the plugin for
+    extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
+    max_file_lines = nil, -- Do not enable for files with more than n lines, int
+    -- colors = {}, -- table of hex strings
+    -- termcolors = {} -- table of colour name strings
+  }
+}
+
 END
 
 " mapping
@@ -136,11 +174,15 @@ nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 
 "commentary
 nnoremap <leader>/ :Commentary<CR>
+vnoremap <leader>/ :Commentary<CR>
 
 " ranger
 let g:rnvimr_ex_enable = 1
 nmap <leader>r :RnvimrToggle<CR>
 
+" buffer movement
+nnoremap <Tab> :TablineBufferNext <Enter> 
+nnoremap <S-Tab> :TablineBufferPrevious <Enter>
 
 
 
