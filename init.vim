@@ -1,8 +1,7 @@
 
 call plug#begin('~/.vim/plugged')
 
-Plug 'folke/tokyonight.nvim', { 'branch': 'main' }
-Plug 'Mofiqul/dracula.nvim'
+Plug 'navarasu/onedark.nvim'
 Plug 'nvim-lualine/lualine.nvim'
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'kdheepak/tabline.nvim'
@@ -16,7 +15,7 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 let g:coc_global_extensions = ['coc-clangd', 'coc-css', 'coc-cssmodules', 'coc-emmet', 'coc-eslint', 'coc-html', 'coc-json', 'coc-prettier', 'coc-tsserver']
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'p00f/nvim-ts-rainbow'
-
+Plug 'jiangmiao/auto-pairs'
 
 call plug#end()
 
@@ -25,7 +24,9 @@ let g:mapleader = "\<Space>"
 
 syntax enable                           " Enables syntax highlighing
 set hidden                              " Required to keep multiple buffers open multiple buffers
-set nowrap                              " Display long lines as just one line
+set wrap      " Display long lines as just one line
+set ai
+set si
 set encoding=utf-8                      " The encoding displayed
 set pumheight=10                        " Makes popup menu smaller
 set fileencoding=utf-8                  " The encoding written to file
@@ -49,6 +50,7 @@ set cursorline                          " Enable highlighting of the current lin
 set background=dark                     " tell vim what the background color looks like
 set showtabline=2                       " Always show tabs
 set noshowmode                          " We don't need to see things like -- INSERT -- anymore
+set noswapfile
 set nobackup                            " This is recommended by coc
 set nowritebackup                       " This is recommended by coc
 set updatetime=300                      " Faster completion
@@ -60,7 +62,7 @@ let g:dracula_show_end_of_buffer = 1
 let g:dracula_transparent_bg = 1
 let g:dracula_lualine_bg_color = "#44475a"
 
-colorscheme dracula
+colorscheme onedark
 
 lua << END
 
@@ -105,7 +107,7 @@ require'tabline'.setup {
         show_tabs_always = false, -- this shows tabs only when there are more than one tab or if the first tab is named
         show_devicons = true, -- this shows devicons in buffer section
         show_bufnr = false, -- this appends [bufnr] to buffer section,
-        show_filename_only = true, -- shows base filename only instead of relative path in filename
+        show_filename_only = false, -- shows base filename only instead of relative path in filename
       }
     }
 
@@ -122,7 +124,6 @@ require'colorizer'.setup(
 	  css_fn   = true;         -- Enable all CSS *functions*: rgb_fn, hsl_fn
   })
 
-require('dracula').colors()
 
 require('telescope').setup{
   -- ...
@@ -166,6 +167,19 @@ END
 
 " mapping
 
+vnoremap <silent> * :<C-u>call VisualSelection('', '')<CR>/<C-R>=@/<CR><CR>
+vnoremap <silent> # :<C-u>call VisualSelection('', '')<CR>?<C-R>=@/<CR><CR>
+
+"window switching
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+
+" window split
+nnoremap <Leader>v :vsplit<enter>
+nnoremap <Leader>s :split<enter>
+
 "telescope
 nnoremap <leader>ff <cmd>Telescope find_files<cr>
 nnoremap <leader>fg <cmd>Telescope live_grep<cr>
@@ -183,22 +197,6 @@ nmap <leader>r :RnvimrToggle<CR>
 " buffer movement
 nnoremap <Tab> :TablineBufferNext <Enter> 
 nnoremap <S-Tab> :TablineBufferPrevious <Enter>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
